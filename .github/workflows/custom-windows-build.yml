@@ -48,8 +48,8 @@ jobs:
         run: npm run _ci-release:dev
       - name: Prepare Windows configuration
         run: node src-build/prepareWindowsBuild.js ${{ matrix.target }}
-      - name: Build unsigned NSIS installer and app binary
-        run: npx tauri build --config src-tauri/tauri-custom.conf.json
+      - name: Compile portable Windows application
+        run: npx tauri build --config src-tauri/tauri-custom.conf.json --bundles none
       - name: Package portable application
         run: node src-build/packagePortableWindows.js ${{ matrix.target }}
       - name: Verify portable package
@@ -68,7 +68,12 @@ jobs:
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 30
+      - name: Build unsigned NSIS installer
+        id: nsis
+        continue-on-error: true
+        run: npx tauri build --config src-tauri/tauri-custom.conf.json
       - name: Upload NSIS installer
+        if: steps.nsis.outcome == 'success'
         uses: actions/upload-artifact@v4
         with:
           name: phoenix-windows-${{ matrix.target }}-installer

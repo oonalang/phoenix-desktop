@@ -1,6 +1,10 @@
 name: Build Phoenix Windows installers and portable ZIPs
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/custom-windows-build.yml
   workflow_dispatch:
     inputs:
       target:
@@ -23,7 +27,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: ${{ fromJSON(inputs.target == 'both' && '["modern","legacy"]' || format('["{0}"]', inputs.target)) }}
+        target: ${{ fromJSON(inputs.target == 'modern' && '["modern"]' || inputs.target == 'legacy' && '["legacy"]' || '["modern","legacy"]') }}
     steps:
       - uses: actions/checkout@v4
       - name: Install Node.js

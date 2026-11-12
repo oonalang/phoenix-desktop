@@ -10,7 +10,14 @@ if (!["modern", "legacy"].includes(variant)) {
 
 const releaseDir = path.join(root, "src-tauri", "target", "release");
 const tauriDir = path.join(root, "src-tauri");
-const appBinary = path.join(releaseDir, "phoenix-code-ide.exe");
+const executableNames = variant === "legacy"
+    ? ["Phoenix Code Fork Legacy.exe", "phoenix-code-ide.exe"]
+    : ["Phoenix Code Fork.exe", "phoenix-code-ide.exe"];
+const appBinary = executableNames.map(name => path.join(releaseDir, name))
+    .find(candidate => fs.existsSync(candidate));
+if (!appBinary) {
+    throw new Error("Tauri application executable not found. Checked: " + executableNames.join(", "));
+}
 const sourceNode = path.join(tauriDir, "src-node");
 const sidecars = [
     path.join(tauriDir, "phnode-x86_64-pc-windows-msvc.exe"),

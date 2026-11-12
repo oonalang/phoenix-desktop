@@ -29,9 +29,9 @@ config.tauri.updater.endpoints = [];
 config.tauri.bundle.windows.webviewInstallMode = mode === "legacy"
     ? {type: "embedBootstrapper"}
     : {type: "downloadBootstrapper"};
-delete config.tauri.bundle.windows.certificateThumbprint;
-delete config.tauri.bundle.windows.timestampUrl;
-delete config.tauri.bundle.windows.digestAlgorithm;
+config.tauri.bundle.windows.certificateThumbprint = null;
+config.tauri.bundle.windows.timestampUrl = null;
+config.tauri.bundle.windows.digestAlgorithm = "sha256";
 
 for (const windowConfig of config.tauri.windows) {
     if (windowConfig.url && windowConfig.url.startsWith("phtauri://localhost/")) {

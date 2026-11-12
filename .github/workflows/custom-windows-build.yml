@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - .github/workflows/custom-windows-build.yml
+      - package.json
       - src-build/packagePortableWindows.js
       - src-build/prepareWindowsBuild.js
   workflow_dispatch:
@@ -48,6 +49,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: npm run _ci-release:dev
+      - name: Test live resize HTML source updates
+        shell: pwsh
+        run: |
+          Push-Location phoenix
+          node --test test/visual-resize.test.cjs
+          Pop-Location
       - name: Prepare Windows configuration
         run: node src-build/prepareWindowsBuild.js ${{ matrix.target }}
       - name: Compile portable Windows application

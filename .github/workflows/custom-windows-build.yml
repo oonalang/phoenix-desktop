@@ -1,0 +1,48 @@
+name: Build Phoenix Windows installers
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Windows build variant
+        required: true
+        type: choice
+        options:
+          - modern
+          - legacy
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-2022
+    timeout-minutes: 110
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: "1.85.1"
+      - name: Install desktop dependencies
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: npm ci
+      - name: Build pinned Phoenix editor
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: npm run _ci-release:dev
+      - name: Prepare custom Windows configuration
+        run: node src-build/prepareWindowsBuild.js ${{ inputs.target }}
+      - name: Package unsigned installer
+        run: npx tauri build --config src-tauri/tauri-custom.conf.json
+      - name: Upload NSIS installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: phoenix-windows-${{ inputs.target }}
+          path: src-tauri/target/release/bundle/nsis/*.exe
+          if-no-files-found: error

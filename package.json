@@ -31,7 +31,9 @@
         "postinstall": "node ./src-build/downloadNodeBinary.js && node ./src-build/setupElectron.js",
         "cleanNodeBinary": "node src-build/cleanNodeBinary.js",
         "installNodeArmDarwin": "node ./src-build/downloadNodeBinary.js '{\"platform\":\"darwin\",\"arch\":\"arm64\"}'",
-        "getPackageVersion": "node ./src-build/getVersion.js"
+        "getPackageVersion": "node ./src-build/getVersion.js",
+        "build:windows": "node src-build/prepareWindowsBuild.js modern && tauri build --config src-tauri/tauri-custom.conf.json",
+        "build:windows:legacy": "node src-build/prepareWindowsBuild.js legacy && tauri build --config src-tauri/tauri-custom.conf.json"
     },
     "devDependencies": {
         "@tauri-apps/cli": "1.6.3",

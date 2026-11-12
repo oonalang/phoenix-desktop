@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - .github/workflows/custom-windows-build.yml
+      - src-build/packagePortableWindows.js
+      - src-build/prepareWindowsBuild.js
   workflow_dispatch:
     inputs:
       target:
@@ -51,6 +53,7 @@ jobs:
       - name: Compile portable Windows application
         run: npx tauri build --config src-tauri/tauri-custom.conf.json --bundles none
       - name: Package portable application
+        timeout-minutes: 18
         run: node src-build/packagePortableWindows.js ${{ matrix.target }}
       - name: Verify portable package
         shell: pwsh

@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import {fileURLToPath} from "node:url";
+import {spawnSync} from "node:child_process";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const variant = process.argv[2];
@@ -26,6 +27,21 @@ const sidecars = [
 const sidecar = sidecars.find(item => fs.existsSync(item));
 const destination = path.join(root, "dist", "portable", "phoenix-windows-" + variant);
 
+function copyTree(from, to) {
+    fs.mkdirSync(to, {recursive: true});
+    console.log("Copying", from, "to", to);
+    const result = spawnSync("robocopy", [
+        from, to, "/E", "/R:1", "/W:1", "/MT:16", "/XJ", "/NFL", "/NDL", "/NJH", "/NJS"
+    ], {stdio: "inherit"});
+    if (result.error) {
+        throw result.error;
+    }
+    if (result.status === null || result.status >= 8) {
+        throw new Error("Robocopy failed with exit code " + result.status);
+    }
+    console.log("Copied:", to);
+}
+
 function requireFile(file, label) {
     if (!fs.statSync(file, {throwIfNoEntry: false})?.isFile()) {
         throw new Error(label + " is missing: " + file);
@@ -45,7 +61,7 @@ fs.rmSync(destination, {recursive: true, force: true});
 fs.mkdirSync(destination, {recursive: true});
 fs.copyFileSync(appBinary, path.join(destination, "phoenix-code-ide.exe"));
 fs.copyFileSync(sidecar, path.join(destination, "phnode.exe"));
-fs.cpSync(sourceNode, path.join(destination, "src-node"), {recursive: true, dereference: true});
+copyTree(sourceNode, path.join(destination, "src-node"));
 
 for (const item of fs.readdirSync(releaseDir, {withFileTypes: true})) {
     if (item.isFile() && item.name.toLowerCase().endsWith(".dll")) {
@@ -56,7 +72,7 @@ for (const item of fs.readdirSync(releaseDir, {withFileTypes: true})) {
 let fixedRuntimeIncluded = false;
 const runtimeSource = path.join(tauriDir, "WebView2Runtime109");
 if (variant === "legacy" && fs.existsSync(path.join(runtimeSource, "msedgewebview2.exe"))) {
-    fs.cpSync(runtimeSource, path.join(destination, "WebView2Runtime109"), {recursive: true, dereference: true});
+    copyTree(runtimeSource, path.join(destination, "WebView2Runtime109"));
     fixedRuntimeIncluded = true;
 }
 

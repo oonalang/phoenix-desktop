@@ -7,8 +7,8 @@
         "withGlobalTauri": true
     },
     "package": {
-        "productName": "Phoenix Code Experimental Build",
-        "version": "5.5.11"
+        "productName": "Phoenix Code Fork",
+        "version": "5.6.0"
     },
     "tauri": {
         "allowlist": {
@@ -182,9 +182,9 @@
                 "icons/icon.icns",
                 "icons/icon.ico"
             ],
-            "identifier": "io.phcode.dev",
-            "shortDescription": "Phoenix Code Experimental Build",
-            "longDescription": "Phoenix Code Experimental Build",
+            "identifier": "dev.oonalang.phoenix",
+            "shortDescription": "Phoenix Code Fork",
+            "longDescription": "Phoenix Code Fork",
             "macOS": {
                 "entitlements": "../entitlements.plist",
                 "exceptionDomain": "localhost",
@@ -444,7 +444,7 @@
             ]
         },
         "updater": {
-            "active": true,
+            "active": false,
             "windows": {
                 "installMode": "passive"
             },
@@ -460,12 +460,12 @@
                 "height": 900,
                 "minHeight": 600,
                 "resizable": true,
-                "title": "Phoenix Code Experimental Build",
+                "title": "Phoenix Code Fork",
                 "width": 1366,
                 "minWidth": 800,
                 "acceptFirstMouse": true,
                 "fileDropEnabled": false,
-                "url": "phtauri://localhost/v5.1.0/"
+                "url": "phtauri://localhost/v5.6.0/"
             },
             {
                 "label": "healthData",
@@ -477,7 +477,7 @@
             {
                 "label": "fileDrop",
                 "title": "Drop To Open Files",
-                "url": "phtauri://localhost/v5.1.0/drop-files.html",
+                "url": "phtauri://localhost/v5.6.0/drop-files.html",
                 "visible": false,
                 "fileDropEnabled": true,
                 "decorations": false

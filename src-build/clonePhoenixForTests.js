@@ -1,34 +1,17 @@
-import {$} from 'execa'; // https://www.npmjs.com/package/execa
-import fs from 'fs';
-import path from 'path'
+import {$} from "execa";
+import fs from "fs";
+import path from "path";
 
-console.log("Cloning phoenix...");
-async function pwd() {
-    const pwd =  process.cwd();
-    console.log("current dir: ", pwd);
-    return pwd;
+const root = process.cwd();
+const config = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8")).phoenixRepo;
+const directory = path.resolve(root, "..", "phoenix");
+
+if (!fs.existsSync(directory)) {
+    await $`git clone --branch ${config.branch} ${config.gitClonrUrl} ${directory}`;
+} else {
+    await $`git -C ${directory} remote set-url origin ${config.gitClonrUrl}`;
 }
 
-const projectDir = await pwd();
-const phoenixProjectPath = path.join(projectDir, "..", "phoenix");
-
-let packageJSONPath = path.join(projectDir, 'package.json');
-console.log('loading package.json: ', packageJSONPath);
-
-let packageJSON = JSON.parse(fs.readFileSync(packageJSONPath, 'utf-8'));
-const phoenixRepo = packageJSON.phoenixRepo;
-
-process.chdir('..');
-await pwd();
-
-console.log(`Cloning`, phoenixRepo);
-if(!fs.existsSync(phoenixProjectPath)){
-    await $`git clone ${phoenixRepo.gitClonrUrl} --branch ${phoenixRepo.branch}`;
-}
-process.chdir('phoenix');
-await pwd();
-console.log('checking out commit: ', phoenixRepo.commit);
-await $`git checkout ${phoenixRepo.commit}`;
-
-process.chdir(projectDir);
-await pwd();
+await $`git -C ${directory} fetch --no-tags origin ${config.branch}`;
+await $`git -C ${directory} checkout --detach ${config.commit}`;
+console.log("Phoenix test source:", config.gitClonrUrl, config.commit);

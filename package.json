@@ -33,7 +33,9 @@
         "installNodeArmDarwin": "node ./src-build/downloadNodeBinary.js '{\"platform\":\"darwin\",\"arch\":\"arm64\"}'",
         "getPackageVersion": "node ./src-build/getVersion.js",
         "build:windows": "node src-build/prepareWindowsBuild.js modern && tauri build --config src-tauri/tauri-custom.conf.json",
-        "build:windows:legacy": "node src-build/prepareWindowsBuild.js legacy && tauri build --config src-tauri/tauri-custom.conf.json"
+        "build:windows:legacy": "node src-build/prepareWindowsBuild.js legacy && tauri build --config src-tauri/tauri-custom.conf.json",
+        "package:windows:portable": "node src-build/packagePortableWindows.js modern",
+        "package:windows:portable:legacy": "node src-build/packagePortableWindows.js legacy"
     },
     "devDependencies": {
         "@tauri-apps/cli": "1.6.3",

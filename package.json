@@ -52,6 +52,6 @@
     "phoenixRepo": {
         "gitClonrUrl": "https://github.com/oonalang/phoenix.git",
         "branch": "main",
-        "commit": "3a8888ad306dfbed59b4b854853490707f13fb1f"
+        "commit": "710446aeea945b8d8286b27b0f82a6d094e33245"
     }
 }

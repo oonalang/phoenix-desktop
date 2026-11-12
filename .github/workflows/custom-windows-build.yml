@@ -54,6 +54,7 @@ jobs:
         run: |
           Push-Location phoenix
           node --test test/visual-resize.test.cjs
+          node --test test/visual-builder.test.cjs
           Pop-Location
       - name: Prepare Windows configuration
         run: node src-build/prepareWindowsBuild.js ${{ matrix.target }}
